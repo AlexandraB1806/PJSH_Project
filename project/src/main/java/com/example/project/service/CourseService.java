@@ -1,73 +1,71 @@
 package com.example.project.service;
 
 import com.example.project.entity.Course;
-import com.example.project.entity.Trainer;
-import com.example.project.entity.Student;
 import com.example.project.enums.CourseName;
 import com.example.project.enums.Day;
 import com.example.project.enums.Studio;
-import com.example.project.repository.CourseRepository;
-import com.example.project.repository.TrainerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-@Service
-public class CourseService {
-    private final CourseRepository courseRepository;
-    private final TrainerRepository trainerRepository;
+/**
+ * Service interface for Course entity.
+ * Defines methods for CRUD operations and additional business logic.
+ */
+public interface CourseService {
+    /**
+     * Saves a course entity in the correspondent repository.
+     * @param course the course entity to save
+     */
+    void saveCourse(Course course);
 
-    @Autowired
-    public CourseService(CourseRepository courseRepository, TrainerRepository trainerRepository) {
-        this.courseRepository = courseRepository;
-        this.trainerRepository = trainerRepository;
-    }
+    /**
+     * Fetches the list of all CourseName.
+     * @return a list of CourseName
+     */
+    List<CourseName> getAllCoursesName();
 
-    public void createCourse(Course course) {
-        courseRepository.save(course);
-    }
+    /**
+     * Fetches the list of all courses (CourseName), held by a specific trainer.
+     * @param name name of the trainer
+     * @return a list of CourseName
+     */
+    List<CourseName> getCoursesNameByTrainer(String name);
 
-    public List<CourseName> getAllCoursesName() {
-        return courseRepository.findAll().stream().map(Course::getName).collect(Collectors.toList());
-    }
+    /**
+     * Fetches the CourseName by time and day.
+     * @param time time
+     * @param day day
+     * @return the CourseName
+     */
+    CourseName getCourseNameByTimeAndDay(LocalTime time, Day day);
 
-    public List<CourseName> getCoursesByTrainerName(String name) {
-        Trainer trainer = trainerRepository.findByName(name);
+    /**
+     * Fetches the list of all courses (CourseName), held in a specific day.
+     * @param day day
+     * @return a list of CourseName
+     */
+    List<CourseName> getCoursesByDay(Day day);
 
-        return courseRepository.findCourseByTrainer(trainer).stream().map(Course::getName).collect(Collectors.toList());
-    }
+    /**
+     * Fetches the list of students' names (String) enrolled for a specific CourseName.
+     * @param courseName the CourseName
+     * @return a list of students' names
+     */
+    List<String> getListOfStudentsNamesFromCourse(CourseName courseName);
 
-    public CourseName getCourseNameByTimeAndDay(LocalTime time, Day day) {
-        return courseRepository.findCourseNameByTimeAndDay(time, day).getName();
-    }
+    /**
+     * Fetches the number of students enrolled for a specific CourseName.
+     * @param courseName the CourseName
+     * @return the number of students
+     */
+    int getNumberOfAllStudentsFromCourse(CourseName courseName);
 
-    public List<CourseName> getCoursesByDay(Day day) {
-        return courseRepository.findCoursesByDay(day).stream().map(Course::getName).collect(Collectors.toList());
-    }
-
-    public List<String> getListOfStudentsNamesFromCourse(CourseName courseName) {
-        // Get all course intervals
-        List<Course> courses = courseRepository.findByName(courseName).stream().toList();
-        Set<String> allStudents = new HashSet<>();
-
-        for (Course course : courses) {
-            List<String> students = course.getStudents().stream().map(Student::getName).toList();
-            allStudents.addAll(students);
-        }
-
-        return allStudents.stream().toList();
-    }
-
-    public int getNumberOfAllStudentsFromCourse(CourseName courseName) {
-        return getListOfStudentsNamesFromCourse(courseName).size();
-    }
-
-    public List<CourseName> getCourseNameByDayAndStudio(Day day, Studio studio) {
-        return courseRepository.findByDayAndStudio(day, studio).stream().map(Course::getName).collect(Collectors.toList());
-    }
+    /**
+     * Fetches the list of all courses (CourseName), held in a specific day and studio.
+     * @param day day
+     * @param studio studio
+     * @return a list of CourseName
+     */
+    List<CourseName> getCourseNameByDayAndStudio(Day day, Studio studio);
 }

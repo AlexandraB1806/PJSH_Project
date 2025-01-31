@@ -7,7 +7,7 @@ import com.example.project.entity.Course;
 import com.example.project.enums.*;
 import com.example.project.repository.CourseRepository;
 import com.example.project.repository.TrainerRepository;
-import com.example.project.service.CourseService;
+import com.example.project.service.CourseServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ public class CourseServiceTest {
     @Mock
     private TrainerRepository trainerRepository;
 
-    private CourseService courseService;
+    private CourseServiceImpl courseService;
 
     private Trainer trainer1;
 
@@ -40,7 +40,7 @@ public class CourseServiceTest {
 
     @BeforeEach
     void setUp() {
-        courseService = new CourseService(courseRepository, trainerRepository);
+        courseService = new CourseServiceImpl(courseRepository, trainerRepository);
 
         ballet1 = new Course(1L, CourseName.Ballet, Day.MONDAY, LocalTime.of(19, 0), Studio.Studio1, Level.INTERMEDIATE,  trainerRepository.findByName("Viviana Meda"));
         flamenco = new Course(2L, CourseName.Flamenco, Day.TUESDAY, LocalTime.of(19, 0), Studio.Studio1, Level.INTERMEDIATE, trainerRepository.findByName("Alin Piciu"));
@@ -61,11 +61,11 @@ public class CourseServiceTest {
     }
 
     @Test
-    void testGetCoursesByTrainerName() {
+    void testGetCoursesNameByTrainer() {
         when(trainerRepository.findByName(trainer1.getName())).thenReturn(trainer1);
         when(courseRepository.findCourseByTrainer(trainer1)).thenReturn(List.of(flamenco, ballet1));
 
-        List<CourseName> actualNames = courseService.getCoursesByTrainerName("Viviana Meda");
+        List<CourseName> actualNames = courseService.getCoursesNameByTrainer("Viviana Meda");
         actualNames.sort(Comparator.comparing(CourseName::toString));
         List<CourseName> expectedNames = List.of(CourseName.Ballet, CourseName.Flamenco);
 
@@ -94,8 +94,8 @@ public class CourseServiceTest {
     }
 
     @Test
-    void testCreateCourse() {
-        courseService.createCourse(ballet1);
+    void testSaveCourse() {
+        courseService.saveCourse(ballet1);
 
         verify(courseRepository).save(ballet1);
     }

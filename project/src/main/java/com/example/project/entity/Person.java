@@ -3,7 +3,6 @@ package com.example.project.entity;
 import jakarta.persistence.*;
 
 @MappedSuperclass
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

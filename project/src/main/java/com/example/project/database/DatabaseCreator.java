@@ -8,7 +8,7 @@ import com.example.project.enums.Studio;
 import com.example.project.enums.Level;
 import com.example.project.repository.CourseRepository;
 import com.example.project.repository.TrainerRepository;
-import com.example.project.service.CourseService;
+import com.example.project.service.CourseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -26,14 +26,14 @@ public class DatabaseCreator implements CommandLineRunner {
     private TrainerRepository trainerRepository;
     
     @Autowired
-    private CourseService courseService;
+    private CourseServiceImpl courseService;
 
     @Value("${populateDatabase}")
     private boolean populateDatabase;
 
     public DatabaseCreator() {}
 
-    public DatabaseCreator(CourseRepository courseRepository, TrainerRepository trainerRepository, CourseService courseService) {
+    public DatabaseCreator(CourseRepository courseRepository, TrainerRepository trainerRepository, CourseServiceImpl courseService) {
         this.courseRepository = courseRepository;
         this.trainerRepository = trainerRepository;
         this.courseService = courseService;

@@ -16,6 +16,7 @@ public class Subscription {
 
     private int noSessionsAvailable;
 
+    @Enumerated(value = EnumType.STRING)
     private Status status;
 
     private LocalDate startDate;

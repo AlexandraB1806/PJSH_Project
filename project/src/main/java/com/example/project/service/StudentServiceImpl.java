@@ -35,8 +35,9 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findByName(studentName);
         Subscription subscription = student.getSubscription();
 
-//        System.out.println("Number of sessions performed for: " + studentName + " is: " + subscription.getNoSessionsPerformed() + " from " + subscription.getNoSessionsAvailable() + " available");
-//        System.out.println("Starting performed another one...");
+        // Pointcut AOP
+        System.out.println("Number of sessions performed for: " + studentName + " is: " + subscription.getNoSessionsPerformed() + " from " + subscription.getNoSessionsAvailable() + " available");
+        System.out.println("Starting performed another one...");
 
         // No more sessions left for the student
         if (subscription.getNoSessionsPerformed() >= subscription.getNoSessionsAvailable()) {

@@ -104,8 +104,8 @@ public class CourseServiceTest {
     void testGetListOfStudentsNamesFromCourse() {
         Subscription subscription = new Subscription(0, 8, Status.ACTIVE, LocalDate.now(), LocalDate.now(), 400);
 
-        Student student1 = new Student("Ioana Popescu", "0725043791", "user1@gmail.com", subscription, Set.of(ballet1, ballet2, flamenco));
-        Student student2 = new Student("Miruna Enescu", "0725043792", "user2@gmail.com", subscription, Set.of(ballet2));
+        Student student1 = new Student("Ioana Popescu", "0725043791", "popescuioana@gmail.com", subscription, Set.of(ballet1, ballet2, flamenco));
+        Student student2 = new Student("Miruna Enescu", "0725043792", "mirunaaa_enescu@gmail.com", subscription, Set.of(ballet2));
 
         ballet1.setStudents(Set.of(student1));
         ballet2.setStudents(Set.of(student1, student2));

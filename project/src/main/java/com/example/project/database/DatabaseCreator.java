@@ -1,55 +1,47 @@
 package com.example.project.database;
 
 import com.example.project.entity.Course;
-import com.example.project.enums.CourseName;
+import com.example.project.entity.Student;
+import com.example.project.entity.Subscription;
+import com.example.project.enums.*;
 import com.example.project.entity.Trainer;
-import com.example.project.enums.Day;
-import com.example.project.enums.Studio;
-import com.example.project.enums.Level;
 import com.example.project.repository.CourseRepository;
+import com.example.project.repository.StudentRepository;
+import com.example.project.repository.SubscriptionRepository;
 import com.example.project.repository.TrainerRepository;
-import com.example.project.service.CourseServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class DatabaseCreator implements CommandLineRunner {
-    
-    @Autowired
-    private CourseRepository courseRepository;
-    
-    @Autowired
-    private TrainerRepository trainerRepository;
-    
-    @Autowired
-    private CourseServiceImpl courseService;
+    private final CourseRepository courseRepository;
+    private final TrainerRepository trainerRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final StudentRepository studentRepository;
 
     @Value("${populateDatabase}")
     private boolean populateDatabase;
 
-    public DatabaseCreator() {}
-
-    public DatabaseCreator(CourseRepository courseRepository, TrainerRepository trainerRepository, CourseServiceImpl courseService) {
+    public DatabaseCreator(CourseRepository courseRepository, TrainerRepository trainerRepository, SubscriptionRepository subscriptionRepository, StudentRepository studentRepository) {
         this.courseRepository = courseRepository;
         this.trainerRepository = trainerRepository;
-        this.courseService = courseService;
+        this.subscriptionRepository = subscriptionRepository;
+        this.studentRepository = studentRepository;
     }
 
-    {
-        this.courseRepository = courseRepository;
-        this.trainerRepository = trainerRepository;
-        this.courseService = courseService;
-    }
-    
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (populateDatabase) {
             this.addTrainers();
             this.addCourses();
+            this.addSubscription();
+            this.addStudents();
         }
     }
 
@@ -112,7 +104,7 @@ public class DatabaseCreator implements CommandLineRunner {
         }
 
         {
-            Course course = new Course( CourseName.HipHop, Day.MONDAY, LocalTime.of(18, 0), Studio.Studio1, Level.INTERMEDIATE, trainerRepository.findByName("Boldojar Adelina"));
+            Course course = new Course(CourseName.HipHop, Day.MONDAY, LocalTime.of(18, 0), Studio.Studio1, Level.INTERMEDIATE, trainerRepository.findByName("Boldojar Adelina"));
             courseRepository.save(course);
         }
 
@@ -204,6 +196,90 @@ public class DatabaseCreator implements CommandLineRunner {
         {
             Course course = new Course(CourseName.HipHop, Day.FRIDAY, LocalTime.of(19, 0), Studio.Studio2, Level.BEGINNER, trainerRepository.findByName("Viviana Meda"));
             courseRepository.save(course);
+        }
+    }
+
+    private void addSubscription() {
+        {
+            Subscription subscription = new Subscription(0, 4, Status.ACTIVE, LocalDate.now(), LocalDate.now().plusMonths(1), 280);
+            subscriptionRepository.save(subscription);
+        }
+        {
+            Subscription subscription = new Subscription(0, 8, Status.ACTIVE, LocalDate.now(), LocalDate.now().plusMonths(1), 400);
+            subscriptionRepository.save(subscription);
+        }
+        {
+            Subscription subscription = new Subscription(0, 12, Status.ACTIVE, LocalDate.now(), LocalDate.now().plusMonths(1), 500);
+            subscriptionRepository.save(subscription);
+        }
+        {
+            Subscription subscription = new Subscription(0, 18, Status.ACTIVE, LocalDate.now(), LocalDate.now().plusMonths(1), 650);
+            subscriptionRepository.save(subscription);
+        }
+        {
+            Subscription subscription = new Subscription(0, 80, Status.ACTIVE, LocalDate.now(), LocalDate.now().plusMonths(1), 880);
+            subscriptionRepository.save(subscription);
+        }
+        {
+            Subscription subscription = new Subscription(0, 1, Status.ACTIVE, LocalDate.now(), LocalDate.now().plusMonths(1), 75);
+            subscriptionRepository.save(subscription);
+        }
+    }
+
+    private void addStudents() {
+        {
+            Set<Course> courseSet = new HashSet<>();
+            Course course = courseRepository.findByNameAndDay(CourseName.Ballet, Day.MONDAY);
+            courseSet.add(course);
+            course = courseRepository.findByNameAndDay(CourseName.Flamenco, Day.MONDAY);
+            courseSet.add(course);
+            course = courseRepository.findByNameAndDay(CourseName.Bachata, Day.TUESDAY);
+            courseSet.add(course);
+            course = courseRepository.findByNameAndDay(CourseName.ModernDance, Day.WEDNESDAY);
+            courseSet.add(course);
+            course = courseRepository.findByNameAndDay(CourseName.BreakDance, Day.WEDNESDAY);
+            courseSet.add(course);
+
+            Subscription subscription = subscriptionRepository.findById(1L).orElse(null);
+
+            Student student = new Student("Maria Ionescu", "0725043791", "mariaaionescu@gmail.com", subscription, courseSet);
+            studentRepository.save(student);
+        }
+
+        {
+            Set<Course> courseSet = new HashSet<>(courseRepository.findCourseByTrainer(trainerRepository.findByName("Bogdan Boanta")));
+
+            Subscription subscription = subscriptionRepository.findById(2L).orElse(null);
+
+            Student student = new Student("Alexandru Popescu", "0725043792", "popescu.alex@gmail.com", subscription, courseSet);
+            studentRepository.save(student);
+        }
+
+        {
+            Set<Course> courseSet = new HashSet<>(courseRepository.findCoursesByDay(Day.WEDNESDAY));
+
+            Subscription subscription = subscriptionRepository.findById(3L).orElse(null);
+
+            Student student = new Student("Ana Radu-Mihalcea", "0725043793", "anuscaradu@gmail.com", subscription, courseSet);
+            studentRepository.save(student);
+        }
+
+        {
+            Set<Course> courseSet = new HashSet<>(courseRepository.findByDayAndStudio(Day.THURSDAY, Studio.Studio1));
+
+            Subscription subscription = subscriptionRepository.findById(4L).orElse(null);
+
+            Student student = new Student("Gabriela Serban", "0725043794", "gabi_serban@gmail.com", subscription, courseSet);
+            studentRepository.save(student);
+        }
+
+        {
+            Set<Course> courseSet = courseRepository.findByName(CourseName.HipHop);
+
+            Subscription subscription = subscriptionRepository.findById(5L).orElse(null);
+
+            Student student = new Student("Eduard Marin", "0725043795", "ediiiiii@gmail.com", subscription, courseSet);
+            studentRepository.save(student);
         }
     }
 }

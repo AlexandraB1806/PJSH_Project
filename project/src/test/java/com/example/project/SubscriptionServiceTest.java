@@ -36,7 +36,7 @@ public class SubscriptionServiceTest {
     void setUp() {
         subscriptionService = new SubscriptionServiceImpl(subscriptionRepository, studentRepository);
         subscription = new Subscription(0, 80, Status.ACTIVE, LocalDate.now(), LocalDate.now().plusMonths(1), 880);
-        student = new Student("Maria Ionescu", "0725043791", "user1@gmail.com", subscription, Set.of());
+        student = new Student("Maria Ionescu", "0725043791", "ionescu.mariaa@gmail.com", subscription, Set.of());
         subscription.setStudent(student);
     }
 
